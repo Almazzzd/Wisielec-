@@ -7,24 +7,16 @@ using System.Diagnostics;
 using System.Threading;
 
 
+String[] lines = System.IO.File.ReadAllLines("dane_wisielec.csv"); // path do bazy danych
 
-String[] lines = System.IO.File.ReadAllLines(@"C:\Users\macie\OneDrive\Desktop\AMC\testy\testy\dane_wisielec.csv");
-
-Random r = new Random();
-int rInt = r.Next(0, 1000);
-
+Random r = new Random();                            // losowanie hasła z bazy danych  
+int rInt = r.Next(0, 1000);           
 string haslo =lines[rInt];
 
-Stopwatch zegar = new Stopwatch();
+         
 
 bool[] znalezione = new bool[haslo.Length];
-
-
-    for (int i = 0; i < haslo.Length; i++)
-    {
-        Console.WriteLine(znalezione[i]);
-    }
-    void rysuj(int blad)
+void rysuj(int blad)
     {
 
         switch (blad)
@@ -80,20 +72,22 @@ bool[] znalezione = new bool[haslo.Length];
                 break;
         }
 
-    }
+    }                           // rysowanie wisielca w zależności od ilości błędów  
 
-    int dobrze = 0;
-    int zle = 0;
-    int np =0;
 
+Stopwatch zegar = new Stopwatch();
 zegar.Start();
 
-while (dobrze != haslo.Length && zle < 7)
+int dobrze = 0;                                             
+int zle = 0;                             //zmiennej którą używam do wyrysowania wisielca
+int np = 0;                             //zmienna do liczenia błędów w stosunku do znaków
+
+while (dobrze != haslo.Length && zle < 7)    //główna pętla gry
 {
     Console.Clear();
     string slowo = "";
 
-    for (int i = 0; i < haslo.Length; i++)
+    for (int i = 0; i < haslo.Length; i++)    // rysowanie słowa albo pustych miejsc ( _ )
     {
         if (znalezione[i] == false)
         {
@@ -113,8 +107,10 @@ while (dobrze != haslo.Length && zle < 7)
     Console.WriteLine("Podaj Literkę (proszę o małą :) )");
 
     string litera = Console.ReadLine();
+
     np++;
-    while (!(litera.Length == 1 && ((litera[0] <= 'z' && litera[0] >= 'a') || (litera[0] <= 'Z' && litera[0] >= 'A'))))
+
+    while (!(litera.Length == 1 && ((litera[0] <= 'z' && litera[0] >= 'a') || (litera[0] <= 'Z' && litera[0] >= 'A'))))  //sprawdzanie poprawności inputu
     {
         Console.WriteLine("proszę podać poprawną literkę ;) ");
         litera = Console.ReadLine();
@@ -122,7 +118,7 @@ while (dobrze != haslo.Length && zle < 7)
     }
     bool trafione = false;
 
-    for (int i = 0; i < haslo.Length; i++)
+    for (int i = 0; i < haslo.Length; i++)                          // sprawdzenie występowania w haśle
     {
         if (((haslo[i] == litera[0] || haslo[i] - 32 == litera[0]) || haslo[i] + 32 == litera[0]) && znalezione[i] == false)
             {
@@ -130,7 +126,6 @@ while (dobrze != haslo.Length && zle < 7)
                 dobrze++;
                 trafione = true;
             }
-
         }
         if (!trafione)
         {
@@ -138,11 +133,11 @@ while (dobrze != haslo.Length && zle < 7)
         }
     else { np--; }
     }
-string kom = "";
 
+string kom;
 zegar.Stop();
 
-if (dobrze == haslo.Length)
+if (dobrze == haslo.Length)  //wypisanie komentarza po grze 
     {
         Console.Clear();
         Console.WriteLine("Gratulacje wygranej");
@@ -166,8 +161,6 @@ string[] historia =
           "Dziękuję za grę ", kom, "Twoje hasło to "+haslo , "poełniłeś "+ np + " Błędów","Czas gry "+zegar.Elapsed.Seconds +" sekund","Zapraszam do kolejnej gry :D ", "++++++++++++++++++++++++++++++++++++"
         };
 
-
-
-await File.AppendAllLinesAsync("Historia.txt", historia);
+await File.AppendAllLinesAsync("Historia.txt", historia);  //zapisywanie historii 
 
 
